@@ -70,11 +70,21 @@ public class AccountController {
 
     /**
      * Endpoint v1:
-     * http://localhost:8080/api/v1/account/all-accounts
+     * GET - http://localhost:8080/api/v1/account/{accountNumber}/status
      *
-     * Endpoint to obtain the weather of a specific city.
+     * Retrieves the status of an existing account by account number.
      *
-     * @param city Name of the city. It cannot be empty and must contain only alphabetic characters.
-     * @return A ResponseEntity object with weather information for the requested city.
+     * @param accountNumber the unique identifier for the account.
+     * @return a ResponseEntity containing the account status (ACTIVE, CLOSED, SUSPENDED).
+     *         Possible responses:
+     *         - 200 OK: if the account status is retrieved successfully.
+     *         - 404 Not Found: if no account is found with the specified account number.
+     *         - 500 Internal Server Error: if there is a server error.
+     *
+     * Example response:
+     * {
+     *   "accountNumber": "1234-5678-9123-4567",
+     *   "status": "ACTIVE"
+     * }
      */
 }
