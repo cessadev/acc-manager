@@ -11,13 +11,12 @@ public class AccountController {
     * FUNCTIONS
     *
     * Endpoints
-    * 1. CREATE NEW ACCOUNT
-    * 2. UPDATE EXISTING ACCOUNT DATA
-    * 3. CHECK THE STATUS OF AN ACCOUNT BY -ACCOUNT NUMBER-
+    * 1. Create new account
+    * 2. Update existing account data
+    * 3. Check status of an account by -ACCOUNT NUMBER-
     *
     * VALIDATE:
-    *
-    * -
+    * - Validate that the initial balance is not negative when creating an account.
     * */
 
     /**
