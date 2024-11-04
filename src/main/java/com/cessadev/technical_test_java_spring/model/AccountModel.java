@@ -34,7 +34,7 @@ public class AccountModel {
     private String ownerName;
 
     @Enumerated(EnumType.STRING)
-    private EStatusAccount status;
+    private EStatusAccount status = EStatusAccount.ACTIVE;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;

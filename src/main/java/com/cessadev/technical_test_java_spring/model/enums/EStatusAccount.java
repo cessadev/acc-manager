@@ -1,7 +1,7 @@
 package com.cessadev.technical_test_java_spring.model.enums;
 
 public enum EStatusAccount {
-    ACTIVATE,
+    ACTIVE,
     CLOSED,
     SUSPENDED
 }
