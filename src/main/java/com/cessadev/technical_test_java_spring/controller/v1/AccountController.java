@@ -69,6 +69,42 @@ public class AccountController {
 
     /**
      * Endpoint v1:
+     * PUT - http://localhost:8080/api/v1/account/{accountNumber}/update
+     *
+     * Updates the information of an existing account identified by account number.
+     *
+     * @param accountNumber the unique identifier for the account to be updated.
+     * @param accountDetails an object containing the updated details for the account.
+     *                       Fields may include:
+     *                       - ownerName: the updated name of the account owner.
+     *                       - status: the new status of the account (ACTIVE, CLOSED, SUSPENDED).
+     * @return a ResponseEntity indicating the result of the update operation.
+     *         Possible responses:
+     *         - 200 OK: if the account is updated successfully.
+     *         - 400 Bad Request: if the provided data is invalid.
+     *         - 404 Not Found: if no account is found with the specified account number.
+     *         - 500 Internal Server Error: if there is a server error.
+     *
+     * Example request body:
+     * {
+     *   "ownerName": "Updated Name",
+     *   "status": "ACTIVE"
+     * }
+     *
+     * Example response:
+     * {
+     *   "message": "Account updated successfully.",
+     *   "account": {
+     *     "accountNumber": "123456",
+     *     "ownerName": "Updated Name",
+     *     "status": "ACTIVE"
+     *   }
+     * }
+     */
+
+
+    /**
+     * Endpoint v1:
      * GET - http://localhost:8080/api/v1/account/{accountNumber}/status
      *
      * Retrieves the status of an existing account by account number.
