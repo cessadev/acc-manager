@@ -1,6 +1,7 @@
 package com.cessadev.technical_test_java_spring.service.implementation;
 
 import com.cessadev.technical_test_java_spring.model.dto.*;
+import com.cessadev.technical_test_java_spring.persistence.dao.IAccountDAO;
 import com.cessadev.technical_test_java_spring.service.IAccountService;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,12 @@ import java.util.UUID;
 @Service
 public class AccountServiceImpl implements IAccountService {
 
+    private final IAccountDAO accountDAO;
+
+    public AccountServiceImpl(IAccountDAO accountDAO) {
+        this.accountDAO = accountDAO;
+    }
+
     public String generateAccountNumber() {
         String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 16);
         return uuid.substring(0, 4) + "-" + uuid.substring(4, 8) + "-" +
@@ -18,12 +25,12 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public List<AccountDTOResponse> findAllAccounts() {
-        return null;
+        return accountDAO.findAllAccountsDAO();
     }
 
     @Override
     public void createAccount(CreateAccountDTORequest accountDTORequest) {
-
+        accountDAO.createAccountDAO(accountDTORequest);
     }
 
     @Override
