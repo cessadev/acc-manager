@@ -9,4 +9,6 @@ public interface IAccountDAO {
     List<AccountModel> findAllAccountsDAO();
 
     void createAccountDAO(AccountModel accountModel);
+
+    boolean existsByAccountNumber(String accountNumber);
 }

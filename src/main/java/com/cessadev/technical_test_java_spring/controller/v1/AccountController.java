@@ -1,23 +1,24 @@
 package com.cessadev.technical_test_java_spring.controller.v1;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.cessadev.technical_test_java_spring.model.dto.AccountDTOResponse;
+import com.cessadev.technical_test_java_spring.model.dto.CreateAccountDTORequest;
+import com.cessadev.technical_test_java_spring.service.IAccountService;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/account")
 public class AccountController {
 
-    /*
-    * FUNCTIONS
-    *
-    * Endpoints
-    * 1. Create new account
-    * 2. Update existing account data
-    * 3. Check status of an account by -ACCOUNT NUMBER-
-    *
-    * VALIDATE:
-    * - Validate that the initial balance is not negative when creating an account.
-    * */
+    private final IAccountService accountService;
+
+    public AccountController(IAccountService accountService) {
+        this.accountService = accountService;
+    }
 
     /**
      * Endpoint v1:
@@ -45,7 +46,16 @@ public class AccountController {
      *   }
      * ]
      */
-
+    @GetMapping("all-accounts")
+    public ResponseEntity<List<AccountDTOResponse>> getAllAccounts() {
+        try {
+            List<AccountDTOResponse> accounts = accountService.findAllAccounts();
+            return ResponseEntity.ok(accounts);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
 
     /**
      * Endpoint v1:
@@ -65,7 +75,20 @@ public class AccountController {
      *   "message": "Account created successfully."
      * }
      */
-
+    @PostMapping("create-account")
+    public ResponseEntity<String> createAccount(@RequestBody CreateAccountDTORequest accountDTORequest) {
+        try {
+            accountService.createAccount(accountDTORequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Account created successfully");
+        } catch (DataIntegrityViolationException e) {
+            // Handling data integrity errors (such as duplicates)
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Account number already exists or data is invalid");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while creating the account");
+        }
+    }
 
     /**
      * Endpoint v1:

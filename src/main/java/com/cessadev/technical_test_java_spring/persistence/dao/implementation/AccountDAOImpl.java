@@ -25,4 +25,9 @@ public class AccountDAOImpl implements IAccountDAO {
     public void createAccountDAO(AccountModel accountModel) {
         accountRepository.save(accountModel);
     }
+
+    @Override
+    public boolean existsByAccountNumber(String accountNumber) {
+        return accountRepository.existsByAccountNumber(accountNumber);
+    }
 }
