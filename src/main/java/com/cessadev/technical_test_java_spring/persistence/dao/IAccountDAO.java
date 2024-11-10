@@ -3,6 +3,7 @@ package com.cessadev.technical_test_java_spring.persistence.dao;
 import com.cessadev.technical_test_java_spring.model.AccountModel;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IAccountDAO {
 
@@ -10,5 +11,9 @@ public interface IAccountDAO {
 
     void createAccountDAO(AccountModel accountModel);
 
-    boolean existsByAccountNumber(String accountNumber);
+    AccountModel createAccountWithReturnDAO(AccountModel accountModel);
+
+    Optional<AccountModel> findByAccountNumberDAO(String accountNumber);
+
+    boolean existsByAccountNumberDAO(String accountNumber);
 }

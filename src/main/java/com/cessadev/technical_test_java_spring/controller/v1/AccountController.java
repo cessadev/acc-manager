@@ -2,6 +2,8 @@ package com.cessadev.technical_test_java_spring.controller.v1;
 
 import com.cessadev.technical_test_java_spring.model.dto.AccountDTOResponse;
 import com.cessadev.technical_test_java_spring.model.dto.CreateAccountDTORequest;
+import com.cessadev.technical_test_java_spring.model.dto.UpdateAccountDTORequest;
+import com.cessadev.technical_test_java_spring.model.dto.UpdateAccountDTOResponse;
 import com.cessadev.technical_test_java_spring.service.IAccountService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/account")
+@RequestMapping("api/v1/accounts")
 public class AccountController {
 
     private final IAccountService accountService;
@@ -35,18 +37,18 @@ public class AccountController {
      * Example response:
      * [
      *   {
-     *     "id": 123e4567-h09b-18m3-aty6-44174000,
+     *     "id": 123x-h09b-18m3-4417,
      *     "ownerName": "John Doe",
      *     "status": "ACTIVE"
      *   },
      *   {
-     *     "id": 74m3e7-e89b-12d3-a456-qw3o44o003,
+     *     "id": 74m3-e89b-12d3-a456,
      *     "ownerName": "Jane Smith",
      *     "status": "ACTIVE"
      *   }
      * ]
      */
-    @GetMapping("all-accounts")
+    @GetMapping("/")
     public ResponseEntity<List<AccountDTOResponse>> getAllAccounts() {
         try {
             List<AccountDTOResponse> accounts = accountService.findAllAccounts();
@@ -75,7 +77,7 @@ public class AccountController {
      *   "message": "Account created successfully."
      * }
      */
-    @PostMapping("create-account")
+    @PostMapping("create")
     public ResponseEntity<String> createAccount(@RequestBody CreateAccountDTORequest accountDTORequest) {
         try {
             accountService.createAccount(accountDTORequest);
@@ -92,7 +94,7 @@ public class AccountController {
 
     /**
      * Endpoint v1:
-     * PUT - http://localhost:8080/api/v1/account/{accountNumber}/update
+     * PUT - http://localhost:8080/api/v1/accounts/update/{accountNumber}
      *
      * Updates the information of an existing account identified by account number.
      *
@@ -116,7 +118,7 @@ public class AccountController {
      *
      * Example response:
      * {
-     *   "message": "Account updated successfully.",
+     *   "message": "Account updated successfully",
      *   "account": {
      *     "accountNumber": "123456",
      *     "ownerName": "Updated Name",
@@ -124,7 +126,23 @@ public class AccountController {
      *   }
      * }
      */
-
+    @PutMapping("/update/{accountNumber}")
+    public ResponseEntity<UpdateAccountDTOResponse> updateAccountByAccountNumber(
+            @PathVariable String accountNumber,
+            @RequestBody UpdateAccountDTORequest accountDetails) {
+        try {
+            UpdateAccountDTOResponse updateAccountDTOResponse = accountService.updateAccount(accountNumber, accountDetails);
+            return ResponseEntity.ok(updateAccountDTOResponse);
+        } catch (IllegalArgumentException e) {
+        // Handles invalid argument errors
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new UpdateAccountDTOResponse("Invalid input: " + e.getMessage(), null));
+        } catch (Exception e) {
+        // General handling for unexpected errors
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new UpdateAccountDTOResponse("An unexpected error occurred", null));
+        }
+    }
 
     /**
      * Endpoint v1:

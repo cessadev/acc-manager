@@ -8,6 +8,7 @@ import com.cessadev.technical_test_java_spring.util.mapper.IAccountMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -36,7 +37,7 @@ public class AccountServiceImpl implements IAccountService {
         String accountNumber;
         do {
             accountNumber = generateAccountNumber();
-        } while (accountDAO.existsByAccountNumber(accountNumber));
+        } while (accountDAO.existsByAccountNumberDAO(accountNumber));
 
         accountModel.setAccountNumber(accountNumber);
 
@@ -44,8 +45,24 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public UpdateAccountDTOResponse updateAccount(UpdateAccountDTORequest updateAccountDTORequest) {
-        return null;
+    public UpdateAccountDTOResponse updateAccount(String accountNumber, UpdateAccountDTORequest request) {
+        Optional<AccountModel> accountExist = accountDAO.findByAccountNumberDAO(accountNumber);
+
+        if (accountExist.isEmpty()) {
+            return new UpdateAccountDTOResponse("Account Not Found", null);
+        }
+
+        AccountModel accountModel = accountExist.get();
+
+        if (request.ownerName() != null && request.status() != null) {
+            accountModel.setOwnerName(request.ownerName());
+            accountModel.setStatus(request.status());
+        }
+
+        AccountModel accountUpdated = accountDAO.createAccountWithReturnDAO(accountModel);
+        AccountDTOResponse accountDTOResponse = accountMapper.toDTO(accountUpdated);
+
+        return new UpdateAccountDTOResponse("Account updated successfully", accountDTOResponse);
     }
 
     @Override

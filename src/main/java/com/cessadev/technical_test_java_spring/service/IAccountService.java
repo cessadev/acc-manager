@@ -10,7 +10,7 @@ public interface IAccountService {
 
     void createAccount(CreateAccountDTORequest accountDTORequest);
 
-    UpdateAccountDTOResponse updateAccount(UpdateAccountDTORequest updateAccountDTORequest);
+    UpdateAccountDTOResponse updateAccount(String accountNumber, UpdateAccountDTORequest updateAccountDTORequest);
 
     StatusAccountDTOResponse updateStatusAccount(String accountNumber);
 }

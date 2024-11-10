@@ -6,6 +6,7 @@ import com.cessadev.technical_test_java_spring.persistence.repository.IAccountRe
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class AccountDAOImpl implements IAccountDAO {
@@ -27,7 +28,18 @@ public class AccountDAOImpl implements IAccountDAO {
     }
 
     @Override
-    public boolean existsByAccountNumber(String accountNumber) {
+    public AccountModel createAccountWithReturnDAO(AccountModel accountModel) {
+        return accountRepository.save(accountModel);
+    }
+
+    @Override
+    public Optional<AccountModel> findByAccountNumberDAO(String accountNumber) {
+        AccountModel accountModel = accountRepository.findByAccountNumber(accountNumber);
+        return Optional.ofNullable(accountModel);
+    }
+
+    @Override
+    public boolean existsByAccountNumberDAO(String accountNumber) {
         return accountRepository.existsByAccountNumber(accountNumber);
     }
 }
