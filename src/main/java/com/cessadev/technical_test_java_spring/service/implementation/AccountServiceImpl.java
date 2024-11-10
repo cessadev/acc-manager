@@ -2,6 +2,7 @@ package com.cessadev.technical_test_java_spring.service.implementation;
 
 import com.cessadev.technical_test_java_spring.model.AccountModel;
 import com.cessadev.technical_test_java_spring.model.dto.*;
+import com.cessadev.technical_test_java_spring.model.enums.EStatusAccount;
 import com.cessadev.technical_test_java_spring.persistence.dao.IAccountDAO;
 import com.cessadev.technical_test_java_spring.service.IAccountService;
 import com.cessadev.technical_test_java_spring.util.mapper.IAccountMapper;
@@ -66,8 +67,15 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public StatusAccountDTOResponse updateStatusAccount(String accountNumber) {
-        return null;
+    public StatusAccountDTOResponse findStatusAccount(String accountNumber) {
+        Optional<EStatusAccount> statusAccount = accountDAO.findStatusByAccountNumber(accountNumber);
+
+        if (statusAccount.isEmpty()) {
+            return new StatusAccountDTOResponse("Account Not Exist", accountNumber, null);
+        }
+
+        EStatusAccount status = statusAccount.get();
+        return new StatusAccountDTOResponse("Current account status", accountNumber, status);
     }
 
     public String generateAccountNumber() {

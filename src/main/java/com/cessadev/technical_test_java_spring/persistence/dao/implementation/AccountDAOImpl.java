@@ -1,6 +1,7 @@
 package com.cessadev.technical_test_java_spring.persistence.dao.implementation;
 
 import com.cessadev.technical_test_java_spring.model.AccountModel;
+import com.cessadev.technical_test_java_spring.model.enums.EStatusAccount;
 import com.cessadev.technical_test_java_spring.persistence.dao.IAccountDAO;
 import com.cessadev.technical_test_java_spring.persistence.repository.IAccountRepository;
 import org.springframework.stereotype.Component;
@@ -36,6 +37,12 @@ public class AccountDAOImpl implements IAccountDAO {
     public Optional<AccountModel> findByAccountNumberDAO(String accountNumber) {
         AccountModel accountModel = accountRepository.findByAccountNumber(accountNumber);
         return Optional.ofNullable(accountModel);
+    }
+
+    @Override
+    public Optional<EStatusAccount> findStatusByAccountNumber(String accountNumber) {
+        EStatusAccount statusAccount = accountRepository.findStatusByAccountNumber(accountNumber);
+        return Optional.ofNullable(statusAccount);
     }
 
     @Override

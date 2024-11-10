@@ -1,9 +1,6 @@
 package com.cessadev.technical_test_java_spring.controller.v1;
 
-import com.cessadev.technical_test_java_spring.model.dto.AccountDTOResponse;
-import com.cessadev.technical_test_java_spring.model.dto.CreateAccountDTORequest;
-import com.cessadev.technical_test_java_spring.model.dto.UpdateAccountDTORequest;
-import com.cessadev.technical_test_java_spring.model.dto.UpdateAccountDTOResponse;
+import com.cessadev.technical_test_java_spring.model.dto.*;
 import com.cessadev.technical_test_java_spring.service.IAccountService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -24,7 +21,7 @@ public class AccountController {
 
     /**
      * Endpoint v1:
-     * GET - http://localhost:8080/api/v1/account/all-accounts
+     * GET - http://localhost:8080/api/v1/accounts
      *
      * Retrieves a list of all existing accounts.
      *
@@ -48,7 +45,7 @@ public class AccountController {
      *   }
      * ]
      */
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<AccountDTOResponse>> getAllAccounts() {
         try {
             List<AccountDTOResponse> accounts = accountService.findAllAccounts();
@@ -61,7 +58,7 @@ public class AccountController {
 
     /**
      * Endpoint v1:
-     * POST - http://localhost:8080/api/v1/account/create-account
+     * POST - http://localhost:8080/api/v1/accounts/create
      *
      * Creates a new account for the specified owner.
      *
@@ -77,7 +74,7 @@ public class AccountController {
      *   "message": "Account created successfully."
      * }
      */
-    @PostMapping("create")
+    @PostMapping("/create")
     public ResponseEntity<String> createAccount(@RequestBody CreateAccountDTORequest accountDTORequest) {
         try {
             accountService.createAccount(accountDTORequest);
@@ -146,7 +143,7 @@ public class AccountController {
 
     /**
      * Endpoint v1:
-     * GET - http://localhost:8080/api/v1/account/{accountNumber}/status
+     * GET - http://localhost:8080/api/v1/accounts/{accountNumber}/status
      *
      * Retrieves the status of an existing account by account number.
      *
@@ -159,8 +156,21 @@ public class AccountController {
      *
      * Example response:
      * {
+     *   "message": "Current account status",
      *   "accountNumber": "1234-5678-9123-4567",
      *   "status": "ACTIVE"
      * }
      */
+    @GetMapping("/{accountNumber}/status")
+    public ResponseEntity<StatusAccountDTOResponse> getStatusByAccountNumber(
+            @PathVariable String accountNumber
+    ) {
+        try {
+            StatusAccountDTOResponse statusAccount = accountService.findStatusAccount(accountNumber);
+            return ResponseEntity.ok(statusAccount);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new StatusAccountDTOResponse("An unexpected error occurred", accountNumber, null));
+        }
+    }
 }

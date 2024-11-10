@@ -12,5 +12,5 @@ public interface IAccountService {
 
     UpdateAccountDTOResponse updateAccount(String accountNumber, UpdateAccountDTORequest updateAccountDTORequest);
 
-    StatusAccountDTOResponse updateStatusAccount(String accountNumber);
+    StatusAccountDTOResponse findStatusAccount(String accountNumber);
 }
