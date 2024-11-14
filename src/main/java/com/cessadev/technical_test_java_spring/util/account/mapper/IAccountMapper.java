@@ -1,4 +1,4 @@
-package com.cessadev.technical_test_java_spring.util.mapper;
+package com.cessadev.technical_test_java_spring.util.account.mapper;
 
 import com.cessadev.technical_test_java_spring.model.AccountModel;
 import com.cessadev.technical_test_java_spring.model.dto.AccountDTOResponse;
@@ -9,8 +9,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface IAccountMapper {
-
-    IAccountMapper INSTANCE = Mappers.getMapper(IAccountMapper.class);
 
     AccountDTOResponse toDTO(AccountModel accountModel);
 

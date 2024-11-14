@@ -5,12 +5,13 @@ import com.cessadev.technical_test_java_spring.model.dto.*;
 import com.cessadev.technical_test_java_spring.model.enums.EStatusAccount;
 import com.cessadev.technical_test_java_spring.persistence.dao.IAccountDAO;
 import com.cessadev.technical_test_java_spring.service.IAccountService;
-import com.cessadev.technical_test_java_spring.util.mapper.IAccountMapper;
+import com.cessadev.technical_test_java_spring.util.account.AccountNumberGenerator;
+import com.cessadev.technical_test_java_spring.util.account.mapper.IAccountMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AccountServiceImpl implements IAccountService {
@@ -25,29 +26,33 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public List<AccountDTOResponse> findAllAccounts() {
-        List<AccountModel> accountModelList = accountDAO.findAllAccountsDAO();
+        List<AccountModel> accountModelList = accountDAO.findAllAccounts();
         return accountModelList.stream().map(
-                accountMapper.INSTANCE::toDTO
+                accountMapper::toDTO
         ).toList();
     }
 
     @Override
     public void createAccount(CreateAccountDTORequest accountDTORequest) {
-        AccountModel accountModel = accountMapper.INSTANCE.toEntity(accountDTORequest);
+        AccountModel accountModel = accountMapper.toEntity(accountDTORequest);
 
         String accountNumber;
         do {
-            accountNumber = generateAccountNumber();
-        } while (accountDAO.existsByAccountNumberDAO(accountNumber));
+            accountNumber = AccountNumberGenerator.generateAccountNumber();
+        } while (accountDAO.existsByAccountNumber(accountNumber));
 
         accountModel.setAccountNumber(accountNumber);
 
-        accountDAO.createAccountDAO(accountModel);
+        if (accountModel.getBalance().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Initial balance cannot be negative");
+        }
+
+        accountDAO.createAccount(accountModel);
     }
 
     @Override
     public UpdateAccountDTOResponse updateAccount(String accountNumber, UpdateAccountDTORequest request) {
-        Optional<AccountModel> accountExist = accountDAO.findByAccountNumberDAO(accountNumber);
+        Optional<AccountModel> accountExist = accountDAO.findByAccountNumber(accountNumber);
 
         if (accountExist.isEmpty()) {
             return new UpdateAccountDTOResponse("Account Not Found", null);
@@ -60,7 +65,7 @@ public class AccountServiceImpl implements IAccountService {
             accountModel.setStatus(request.status());
         }
 
-        AccountModel accountUpdated = accountDAO.createAccountWithReturnDAO(accountModel);
+        AccountModel accountUpdated = accountDAO.createAccountWithReturn(accountModel);
         AccountDTOResponse accountDTOResponse = accountMapper.toDTO(accountUpdated);
 
         return new UpdateAccountDTOResponse("Account updated successfully", accountDTOResponse);
@@ -76,11 +81,5 @@ public class AccountServiceImpl implements IAccountService {
 
         EStatusAccount status = statusAccount.get();
         return new StatusAccountDTOResponse("Current account status", accountNumber, status);
-    }
-
-    public String generateAccountNumber() {
-        String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 16);
-        return uuid.substring(0, 4) + "-" + uuid.substring(4, 8) + "-" +
-                uuid.substring(8, 12) + "-" + uuid.substring(12);
     }
 }

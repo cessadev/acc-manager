@@ -11,7 +11,7 @@
 	<groupId>com.cessadev</groupId>
 	<artifactId>technical-test-java-spring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>technical-test-java-spring</name>
+	<name>acc-manager</name>
 	<description>Technical test for Java Backend Developer in the financial sector</description>
 	<url/>
 	<licenses>

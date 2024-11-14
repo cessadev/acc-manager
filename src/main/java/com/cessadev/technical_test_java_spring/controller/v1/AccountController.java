@@ -62,7 +62,7 @@ public class AccountController {
      *
      * Creates a new account for the specified owner.
      *
-     * @param ownerName the name of the account owner.
+     * @param accountDTORequest (ownerName) the name of the account owner.
      * @return a message confirming whether the account was created successfully.
      *         Possible responses:
      *         - 201 Created: if the account is created successfully.
@@ -117,7 +117,7 @@ public class AccountController {
      * {
      *   "message": "Account updated successfully",
      *   "account": {
-     *     "accountNumber": "123456",
+     *     "accountNumber": "1234-b2h3-23n3-556k",
      *     "ownerName": "Updated Name",
      *     "status": "ACTIVE"
      *   }
