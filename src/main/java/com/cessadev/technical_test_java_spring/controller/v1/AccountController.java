@@ -5,6 +5,7 @@ import com.cessadev.technical_test_java_spring.service.IAccountService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -75,17 +76,12 @@ public class AccountController {
      * }
      */
     @PostMapping("/create")
-    public ResponseEntity<String> createAccount(@RequestBody CreateAccountDTORequest accountDTORequest) {
+    public ResponseEntity<?> createAccount(@RequestBody CreateAccountDTORequest accountDTORequest) {
         try {
             accountService.createAccount(accountDTORequest);
             return ResponseEntity.status(HttpStatus.CREATED).body("Account created successfully");
-        } catch (DataIntegrityViolationException e) {
-            // Handling data integrity errors (such as duplicates)
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Account number already exists or data is invalid");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred while creating the account");
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(new ErrorCreateAccountDTO("Error", ex.getMessage()));
         }
     }
 
