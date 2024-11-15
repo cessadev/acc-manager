@@ -13,17 +13,39 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * AccountServiceImpl is the implementation of the IAccountService interface.
+ * This service contains the business logic for managing accounts, such as:
+ * - Retrieving all accounts.
+ * - Creating new accounts with validations and unique account numbers.
+ * - Updating existing accounts.
+ * - Checking the status of accounts by account number.
+ *
+ * The service relies on IAccountDAO for data access operations and IAccountMapper for
+ * mapping between entity and DTO objects.
+ */
 @Service
 public class AccountServiceImpl implements IAccountService {
 
     private final IAccountDAO accountDAO;
     private final IAccountMapper accountMapper;
 
+    /**
+     * Constructor for AccountServiceImpl.
+     *
+     * @param accountDAO   the data access object for account operations.
+     * @param accountMapper the mapper for converting between DTOs and entities.
+     */
     public AccountServiceImpl(IAccountDAO accountDAO, IAccountMapper accountMapper) {
         this.accountDAO = accountDAO;
         this.accountMapper = accountMapper;
     }
 
+    /**
+     * Retrieves a list of all accounts and maps them to DTO responses.
+     *
+     * @return a list of AccountDTOResponse objects representing all stored accounts.
+     */
     @Override
     public List<AccountDTOResponse> findAllAccounts() {
         List<AccountModel> accountModelList = accountDAO.findAllAccounts();
@@ -32,6 +54,12 @@ public class AccountServiceImpl implements IAccountService {
         ).toList();
     }
 
+    /**
+     * Creates a new account with unique account number validation and initial balance checks.
+     *
+     * @param accountDTORequest the details of the account to create.
+     * @throws IllegalArgumentException if the initial balance is negative.
+     */
     @Override
     public void createAccount(CreateAccountDTORequest accountDTORequest) {
         AccountModel accountModel = accountMapper.toEntity(accountDTORequest);
@@ -50,6 +78,14 @@ public class AccountServiceImpl implements IAccountService {
         accountDAO.createAccount(accountModel);
     }
 
+    /**
+     * Updates an existing account by its account number.
+     *
+     * @param accountNumber the unique account number of the account to update.
+     * @param request       the details to update the account with.
+     * @return an UpdateAccountDTOResponse object indicating success or failure,
+     * and the updated account information if applicable.
+     */
     @Override
     public UpdateAccountDTOResponse updateAccount(String accountNumber, UpdateAccountDTORequest request) {
         Optional<AccountModel> accountExist = accountDAO.findByAccountNumber(accountNumber);
@@ -71,6 +107,13 @@ public class AccountServiceImpl implements IAccountService {
         return new UpdateAccountDTOResponse("Account updated successfully", accountDTOResponse);
     }
 
+    /**
+     * Retrieves the status of an account by its account number.
+     *
+     * @param accountNumber the unique account number to search for.
+     * @return a StatusAccountDTOResponse object containing the account's status
+     * or a message if the account does not exist.
+     */
     @Override
     public StatusAccountDTOResponse findStatusAccount(String accountNumber) {
         Optional<EStatusAccount> statusAccount = accountDAO.findStatusByAccountNumber(accountNumber);
