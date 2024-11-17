@@ -75,7 +75,7 @@ public class AccountController {
      *   "message": "Account created successfully."
      * }
      */
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<?> createAccount(@RequestBody CreateAccountDTORequest accountDTORequest) {
         try {
             accountService.createAccount(accountDTORequest);
@@ -119,7 +119,7 @@ public class AccountController {
      *   }
      * }
      */
-    @PutMapping("/update/{accountNumber}")
+    @PutMapping("/{accountNumber}")
     public ResponseEntity<UpdateAccountDTOResponse> updateAccountByAccountNumber(
             @PathVariable String accountNumber,
             @RequestBody UpdateAccountDTORequest accountDetails) {

@@ -6,6 +6,7 @@ import com.cessadev.technical_test_java_spring.model.enums.EStatusAccount;
 import com.cessadev.technical_test_java_spring.persistence.dao.IAccountDAO;
 import com.cessadev.technical_test_java_spring.service.IAccountService;
 import com.cessadev.technical_test_java_spring.util.account.AccountNumberGenerator;
+import com.cessadev.technical_test_java_spring.util.account.ValidateInitialBalance;
 import com.cessadev.technical_test_java_spring.util.account.mapper.IAccountMapper;
 import org.springframework.stereotype.Service;
 
@@ -64,16 +65,14 @@ public class AccountServiceImpl implements IAccountService {
     public void createAccount(CreateAccountDTORequest accountDTORequest) {
         AccountModel accountModel = accountMapper.toEntity(accountDTORequest);
 
+        ValidateInitialBalance.validateInitialBalance(accountModel.getBalance());
+
         String accountNumber;
         do {
             accountNumber = AccountNumberGenerator.generateAccountNumber();
         } while (accountDAO.existsByAccountNumber(accountNumber));
 
         accountModel.setAccountNumber(accountNumber);
-
-        if (accountModel.getBalance().compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Initial balance cannot be negative");
-        }
 
         accountDAO.createAccount(accountModel);
     }
