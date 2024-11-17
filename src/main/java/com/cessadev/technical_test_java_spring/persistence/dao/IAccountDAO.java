@@ -33,12 +33,19 @@ public interface IAccountDAO {
     void createAccount(AccountModel accountModel);
 
     /**
-     * Saves a new account in the database and returns the saved entity.
+     * Update an account in the database.
+     *
+     * @param accountModel the account model to be saved.
+     */
+    void updateAccount(AccountModel accountModel);
+
+    /**
+     * Update an account in the database and returns the saved entity.
      *
      * @param accountModel the account model to be saved.
      * @return the saved AccountModel entity.
      */
-    AccountModel createAccountWithReturn(AccountModel accountModel);
+    AccountModel updateAccountWithReturn(AccountModel accountModel);
 
     /**
      * Finds an account by its unique account number.

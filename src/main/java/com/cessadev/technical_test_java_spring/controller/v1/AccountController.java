@@ -2,10 +2,8 @@ package com.cessadev.technical_test_java_spring.controller.v1;
 
 import com.cessadev.technical_test_java_spring.model.dto.*;
 import com.cessadev.technical_test_java_spring.service.IAccountService;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,7 +57,7 @@ public class AccountController {
 
     /**
      * Endpoint v1:
-     * POST - http://localhost:8080/api/v1/accounts/create
+     * POST - http://localhost:8080/api/v1/accounts
      *
      * Creates a new account for the specified owner.
      *
@@ -87,7 +85,7 @@ public class AccountController {
 
     /**
      * Endpoint v1:
-     * PUT - http://localhost:8080/api/v1/accounts/update/{accountNumber}
+     * PUT - http://localhost:8080/api/v1/accounts/{accountNumber}
      *
      * Updates the information of an existing account identified by account number.
      *
@@ -158,15 +156,15 @@ public class AccountController {
      * }
      */
     @GetMapping("/{accountNumber}/status")
-    public ResponseEntity<StatusAccountDTOResponse> getStatusByAccountNumber(
+    public ResponseEntity<StatusAccountDTO> getStatusByAccountNumber(
             @PathVariable String accountNumber
     ) {
         try {
-            StatusAccountDTOResponse statusAccount = accountService.findStatusAccount(accountNumber);
+            StatusAccountDTO statusAccount = accountService.findStatusAccount(accountNumber);
             return ResponseEntity.ok(statusAccount);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new StatusAccountDTOResponse("An unexpected error occurred", accountNumber, null));
+                    .body(new StatusAccountDTO("An unexpected error occurred", accountNumber, null));
         }
     }
 }

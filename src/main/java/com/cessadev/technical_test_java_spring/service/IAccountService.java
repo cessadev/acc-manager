@@ -45,5 +45,5 @@ public interface IAccountService {
      * @param accountNumber the unique account number to search for.
      * @return a StatusAccountDTOResponse object representing the current status of the account.
      */
-    StatusAccountDTOResponse findStatusAccount(String accountNumber);
+    StatusAccountDTO findStatusAccount(String accountNumber);
 }

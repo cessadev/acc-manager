@@ -1,6 +1,6 @@
 package com.cessadev.technical_test_java_spring.util.account;
 
-import com.cessadev.technical_test_java_spring.exception.custom.InvalidBalanceException;
+import com.cessadev.technical_test_java_spring.exception.custom.account.InvalidBalanceException;
 
 import java.math.BigDecimal;
 

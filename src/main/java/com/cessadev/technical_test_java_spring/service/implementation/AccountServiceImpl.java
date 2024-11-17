@@ -10,7 +10,6 @@ import com.cessadev.technical_test_java_spring.util.account.ValidateInitialBalan
 import com.cessadev.technical_test_java_spring.util.account.mapper.IAccountMapper;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,7 +99,7 @@ public class AccountServiceImpl implements IAccountService {
             accountModel.setStatus(request.status());
         }
 
-        AccountModel accountUpdated = accountDAO.createAccountWithReturn(accountModel);
+        AccountModel accountUpdated = accountDAO.updateAccountWithReturn(accountModel);
         AccountDTOResponse accountDTOResponse = accountMapper.toDTO(accountUpdated);
 
         return new UpdateAccountDTOResponse("Account updated successfully", accountDTOResponse);
@@ -114,14 +113,14 @@ public class AccountServiceImpl implements IAccountService {
      * or a message if the account does not exist.
      */
     @Override
-    public StatusAccountDTOResponse findStatusAccount(String accountNumber) {
+    public StatusAccountDTO findStatusAccount(String accountNumber) {
         Optional<EStatusAccount> statusAccount = accountDAO.findStatusByAccountNumber(accountNumber);
 
         if (statusAccount.isEmpty()) {
-            return new StatusAccountDTOResponse("Account Not Exist", accountNumber, null);
+            return new StatusAccountDTO("Account Not Exist", accountNumber, null);
         }
 
         EStatusAccount status = statusAccount.get();
-        return new StatusAccountDTOResponse("Current account status", accountNumber, status);
+        return new StatusAccountDTO("Current account status", accountNumber, status);
     }
 }

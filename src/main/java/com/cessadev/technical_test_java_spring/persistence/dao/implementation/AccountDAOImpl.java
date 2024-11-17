@@ -57,13 +57,23 @@ public class AccountDAOImpl implements IAccountDAO {
     }
 
     /**
-     * Saves a new account in the database and returns the saved entity.
+     * Update an account in the database without return.
+     *
+     * @param accountModel the account model to be saved.
+     */
+    @Override
+    public void updateAccount(AccountModel accountModel) {
+        accountRepository.save(accountModel);
+    }
+
+    /**
+     * Update an account in the database and returns the updated entity.
      *
      * @param accountModel the account model to be saved.
      * @return the saved AccountModel entity.
      */
     @Override
-    public AccountModel createAccountWithReturn(AccountModel accountModel) {
+    public AccountModel updateAccountWithReturn(AccountModel accountModel) {
         return accountRepository.save(accountModel);
     }
 
