@@ -8,6 +8,7 @@ import com.cessadev.technical_test_java_spring.service.IAccountService;
 import com.cessadev.technical_test_java_spring.util.account.AccountNumberGenerator;
 import com.cessadev.technical_test_java_spring.util.account.ValidateInitialBalance;
 import com.cessadev.technical_test_java_spring.util.account.mapper.IAccountMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.Optional;
  * mapping between entity and DTO objects.
  */
 @Service
+@Slf4j
 public class AccountServiceImpl implements IAccountService {
 
     private final IAccountDAO accountDAO;
@@ -94,8 +96,11 @@ public class AccountServiceImpl implements IAccountService {
 
         AccountModel accountModel = accountExist.get();
 
-        if (request.ownerName() != null && request.status() != null) {
+        if (request.ownerName() != null) {
             accountModel.setOwnerName(request.ownerName());
+        }
+
+        if (request.status() != null) {
             accountModel.setStatus(request.status());
         }
 

@@ -137,7 +137,7 @@ public class AccountController {
 
     /**
      * Endpoint v1:
-     * GET - http://localhost:8080/api/v1/accounts/{accountNumber}/status
+     * GET - http://localhost:8080/api/v1/accounts/status/{accountNumber}
      *
      * Retrieves the status of an existing account by account number.
      *
@@ -155,7 +155,7 @@ public class AccountController {
      *   "status": "ACTIVE"
      * }
      */
-    @GetMapping("/{accountNumber}/status")
+    @GetMapping("/status/{accountNumber}")
     public ResponseEntity<StatusAccountDTO> getStatusByAccountNumber(
             @PathVariable String accountNumber
     ) {
