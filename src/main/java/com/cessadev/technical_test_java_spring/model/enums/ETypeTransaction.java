@@ -9,7 +9,7 @@ public enum ETypeTransaction {
     DEPOSIT,
 
     /** A withdrawal transaction, removing funds from an account */
-    WITHDRAWAL,
+    WITHDRAW,
 
     /** A transfer transaction, moving funds between accounts */
     TRANSFER

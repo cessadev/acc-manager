@@ -44,8 +44,7 @@ public class TransactionController {
 
     @PostMapping("/transfer")
     public ResponseEntity<?> transfer(
-            @RequestBody TransferDTORequest transferDTORequest
-            ) {
+            @RequestBody TransferDTORequest transferDTORequest) {
         try {
             transactionService.transfer(
                     transferDTORequest.sourceAccount(),

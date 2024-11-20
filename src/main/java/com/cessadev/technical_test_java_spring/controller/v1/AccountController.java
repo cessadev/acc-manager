@@ -1,11 +1,13 @@
 package com.cessadev.technical_test_java_spring.controller.v1;
 
 import com.cessadev.technical_test_java_spring.model.dto.*;
+import com.cessadev.technical_test_java_spring.model.enums.ETypeTransaction;
 import com.cessadev.technical_test_java_spring.service.IAccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -166,5 +168,19 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new StatusAccountDTO("An unexpected error occurred", accountNumber, null));
         }
+    }
+
+    @GetMapping("/history/{accountNumber}")
+    public ResponseEntity<List<TransactionHistoryDTOResponse>> getTransactionHistory(
+            @PathVariable String accountNumber,
+            @RequestParam(required = false) LocalDateTime startDate,
+            @RequestParam(required = false) LocalDateTime endDate,
+            @RequestParam(required = false) ETypeTransaction typeTransaction) {
+      try {
+          List<TransactionHistoryDTOResponse> transactionHistory = accountService.getTransactionHistory(accountNumber, startDate, endDate, typeTransaction);
+          return ResponseEntity.ok(transactionHistory);
+      } catch (IllegalArgumentException e) {
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+      }
     }
 }

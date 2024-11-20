@@ -1,7 +1,9 @@
 package com.cessadev.technical_test_java_spring.service;
 
 import com.cessadev.technical_test_java_spring.model.dto.*;
+import com.cessadev.technical_test_java_spring.model.enums.ETypeTransaction;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -46,4 +48,11 @@ public interface IAccountService {
      * @return a StatusAccountDTOResponse object representing the current status of the account.
      */
     StatusAccountDTO findStatusAccount(String accountNumber);
+
+    List<TransactionHistoryDTOResponse> getTransactionHistory(
+            String accountNumber,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            ETypeTransaction type
+    );
 }

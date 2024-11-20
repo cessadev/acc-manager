@@ -1,8 +1,11 @@
 package com.cessadev.technical_test_java_spring.service.implementation;
 
 import com.cessadev.technical_test_java_spring.model.AccountModel;
+import com.cessadev.technical_test_java_spring.model.TransactionModel;
 import com.cessadev.technical_test_java_spring.model.enums.EStatusAccount;
+import com.cessadev.technical_test_java_spring.model.enums.ETypeTransaction;
 import com.cessadev.technical_test_java_spring.persistence.dao.IAccountDAO;
+import com.cessadev.technical_test_java_spring.persistence.dao.ITransactionDAO;
 import com.cessadev.technical_test_java_spring.service.ITransactionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,9 +19,11 @@ import java.util.Optional;
 public class TransactionServiceImpl implements ITransactionService {
 
     private final IAccountDAO accountDAO;
+    private final ITransactionDAO transactionDAO;
 
-    public TransactionServiceImpl(IAccountDAO accountDAO) {
+    public TransactionServiceImpl(IAccountDAO accountDAO, ITransactionDAO transactionDAO) {
         this.accountDAO = accountDAO;
+        this.transactionDAO = transactionDAO;
     }
 
     /**
@@ -46,6 +51,9 @@ public class TransactionServiceImpl implements ITransactionService {
         // Update balance
         account.setBalance(account.getBalance().add(amount));
         accountDAO.updateAccount(account);
+
+        // Record transaction
+        recordTransaction(ETypeTransaction.DEPOSIT, amount, null, account);
     }
 
     /**
@@ -78,25 +86,28 @@ public class TransactionServiceImpl implements ITransactionService {
         // Update balance
         account.setBalance(account.getBalance().subtract(amount));
         accountDAO.updateAccount(account);
+
+        // Persist transaction
+        recordTransaction(ETypeTransaction.WITHDRAW, amount, account, null);
     }
 
     /**
      * Transfer a specific amount between two accounts.
      *
-     * @param sourceAccount      the account number to transfer from.
-     * @param destinationAccount the account number to transfer to.
+     * @param accountOrigin      the account number to transfer from.
+     * @param accountDestination the account number to transfer to.
      * @param amount             the amount to transfer.
      */
     @Override
     @Transactional
-    public void transfer(String sourceAccount, String destinationAccount, BigDecimal amount) {
+    public void transfer(String accountOrigin, String accountDestination, BigDecimal amount) {
         // Validate input
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Transfer amount must be positive");
         }
 
         // Fetch source account
-        Optional<AccountModel> sourceOptional = accountDAO.findByAccountNumber(sourceAccount);
+        Optional<AccountModel> sourceOptional = accountDAO.findByAccountNumber(accountOrigin);
         if (sourceOptional.isEmpty()) {
             throw new IllegalArgumentException("Source account not found");
         }
@@ -104,7 +115,7 @@ public class TransactionServiceImpl implements ITransactionService {
         AccountModel source = sourceOptional.get();
 
         // Fetch destination account
-        Optional<AccountModel> destinationOptional = accountDAO.findByAccountNumber(destinationAccount);
+        Optional<AccountModel> destinationOptional = accountDAO.findByAccountNumber(accountDestination);
         if (destinationOptional.isEmpty()) {
             throw new IllegalArgumentException("Destination account not found");
         }
@@ -128,5 +139,25 @@ public class TransactionServiceImpl implements ITransactionService {
         // Persist changes
         accountDAO.updateAccount(source);
         accountDAO.updateAccount(destination);
+
+        // Persist transaction
+        recordTransaction(ETypeTransaction.TRANSFER, amount, source, destination);
+    }
+
+    private void recordTransaction(
+            ETypeTransaction typeTransaction,
+            BigDecimal amount,
+            AccountModel accountOrigin,
+            AccountModel accountDestination
+    ) {
+        // Create instance of TransactionModel
+        TransactionModel transaction = new TransactionModel();
+        transaction.setTypeTransaction(typeTransaction);
+        transaction.setAmount(amount);
+        transaction.setAccountOrigin(accountOrigin);
+        transaction.setAccountDestination(accountDestination);
+
+        // Persist transaction
+        transactionDAO.insertTransaction(transaction);
     }
 }

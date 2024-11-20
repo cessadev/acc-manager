@@ -1,16 +1,21 @@
 package com.cessadev.technical_test_java_spring.service.implementation;
 
 import com.cessadev.technical_test_java_spring.model.AccountModel;
+import com.cessadev.technical_test_java_spring.model.TransactionModel;
 import com.cessadev.technical_test_java_spring.model.dto.*;
 import com.cessadev.technical_test_java_spring.model.enums.EStatusAccount;
+import com.cessadev.technical_test_java_spring.model.enums.ETypeTransaction;
 import com.cessadev.technical_test_java_spring.persistence.dao.IAccountDAO;
+import com.cessadev.technical_test_java_spring.persistence.dao.ITransactionDAO;
 import com.cessadev.technical_test_java_spring.service.IAccountService;
 import com.cessadev.technical_test_java_spring.util.account.AccountNumberGenerator;
 import com.cessadev.technical_test_java_spring.util.account.ValidateInitialBalance;
 import com.cessadev.technical_test_java_spring.util.account.mapper.IAccountMapper;
+import com.cessadev.technical_test_java_spring.util.account.mapper.ITransactionMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +35,9 @@ import java.util.Optional;
 public class AccountServiceImpl implements IAccountService {
 
     private final IAccountDAO accountDAO;
+    private final ITransactionDAO transactionDAO;
     private final IAccountMapper accountMapper;
+    private final ITransactionMapper transactionMapper;
 
     /**
      * Constructor for AccountServiceImpl.
@@ -38,9 +45,11 @@ public class AccountServiceImpl implements IAccountService {
      * @param accountDAO   the data access object for account operations.
      * @param accountMapper the mapper for converting between DTOs and entities.
      */
-    public AccountServiceImpl(IAccountDAO accountDAO, IAccountMapper accountMapper) {
+    public AccountServiceImpl(IAccountDAO accountDAO, ITransactionDAO transactionDAO, IAccountMapper accountMapper, ITransactionMapper transactionMapper) {
         this.accountDAO = accountDAO;
+        this.transactionDAO = transactionDAO;
         this.accountMapper = accountMapper;
+        this.transactionMapper = transactionMapper;
     }
 
     /**
@@ -127,5 +136,17 @@ public class AccountServiceImpl implements IAccountService {
 
         EStatusAccount status = statusAccount.get();
         return new StatusAccountDTO("Current account status", accountNumber, status);
+    }
+
+    @Override
+    public List<TransactionHistoryDTOResponse> getTransactionHistory(
+            String accountNumber,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            ETypeTransaction typeTransaction) {
+
+        List<TransactionModel> transactionModels = transactionDAO.findByFilters(accountNumber, startDate, endDate, typeTransaction);
+
+        return transactionModels.stream().map(transactionMapper::toTransactionHistoryDTO).toList();
     }
 }
