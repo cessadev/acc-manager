@@ -10,9 +10,27 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ITransactionRepository provides the data access layer for managing TransactionModel entities.
+ * It extends JpaRepository, inheriting common CRUD operations, and defines custom queries
+ * for advanced filtering of transactions.
+ */
 @Repository
 public interface ITransactionRepository extends JpaRepository<TransactionModel, UUID> {
 
+    /**
+     * Retrieves a list of transactions filtered by account number, date range, and transaction type.
+     * This query uses optional filters:
+     * - Account number can match either the origin or destination account.
+     * - Start date and end date define the range of transaction dates.
+     * - Transaction type filters by the type (e.g., DEPOSIT, WITHDRAWAL, TRANSFER).
+     *
+     * @param accountNumber   the account number to filter by; can match either origin or destination.
+     * @param startDate       the start date for the transaction filter (inclusive).
+     * @param endDate         the end date for the transaction filter (inclusive).
+     * @param typeTransaction the type of transaction to filter by.
+     * @return a list of TransactionModel objects matching the specified filters.
+     */
     @Query("SELECT t FROM TransactionModel t " +
             "LEFT JOIN t.accountOrigin ao " +
             "LEFT JOIN t.accountDestination ad " +

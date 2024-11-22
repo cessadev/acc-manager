@@ -170,6 +170,49 @@ public class AccountController {
         }
     }
 
+    /**
+     * Endpoint v1:
+     * GET - http://localhost:8080/api/v1/accounts/history/{accountNumber}
+     *
+     * Endpoint to retrieve the transaction history of an account.
+     *
+     * @param accountNumber   the unique identifier of the account to retrieve the history for.
+     * @param startDate       optional query parameter to filter transactions starting from this date.
+     * @param endDate         optional query parameter to filter transactions up to this date.
+     * @param typeTransaction optional query parameter to filter transactions by type (e.g., DEPOSIT, WITHDRAWAL, TRANSFER).
+     *
+     * @return a list of {@link TransactionHistoryDTOResponse} objects representing the account's transaction history,
+     * or an error response with status 500 if an exception occurs.
+     *
+     * Example response:
+     * [
+     *     {
+     *         "id": "38d8a441-65e0-4ea7-9027-537632758936",
+     *         "typeTransaction": "DEPOSIT",
+     *         "amount": 32000.0000,
+     *         "accountOrigin": null,
+     *         "accountDestination": "abd0-76f9-37a0-4a7a",
+     *         "date": "2024-11-20T11:44:08.378816"
+     *     },
+     *     {
+     *         "id": "8aea9cff-d139-4b6d-8b44-ebe796879ff3",
+     *         "typeTransaction": "WITHDRAW",
+     *         "amount": 10000.0000,
+     *         "accountOrigin": "abd0-76f9-37a0-4a7a",
+     *         "accountDestination": null,
+     *         "date": "2024-11-20T11:44:31.004056"
+     *     },
+     *     {
+     *          "id": "8aea9cff-d139-4b6d-8b44-ebe796879ff3",
+     *          "typeTransaction": "DEPOSIT",
+     *          "amount": 12000.0000,
+     *          "accountOrigin": "abd0-76f9-37a0-4a7a",
+     *          "accountDestination": "92m3-mms2-8j23-2mk4",
+     *          "date": "2024-11-20T11:44:32.004056"
+     *     }
+     * ]
+     *
+     */
     @GetMapping("/history/{accountNumber}")
     public ResponseEntity<List<TransactionHistoryDTOResponse>> getTransactionHistory(
             @PathVariable String accountNumber,
