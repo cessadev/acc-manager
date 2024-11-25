@@ -127,15 +127,15 @@ public class AccountServiceImpl implements IAccountService {
      * or a message if the account does not exist.
      */
     @Override
-    public StatusAccountDTO findStatusAccount(String accountNumber) {
+    public StatusAccountDTOResponse findStatusAccount(String accountNumber) {
         Optional<EStatusAccount> statusAccount = accountDAO.findStatusByAccountNumber(accountNumber);
 
         if (statusAccount.isEmpty()) {
-            return new StatusAccountDTO("Account Not Exist", accountNumber, null);
+            return new StatusAccountDTOResponse("Account Not Exist", accountNumber, null);
         }
 
         EStatusAccount status = statusAccount.get();
-        return new StatusAccountDTO("Current account status", accountNumber, status);
+        return new StatusAccountDTOResponse("Current account status", accountNumber, status);
     }
 
     @Override

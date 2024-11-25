@@ -158,15 +158,15 @@ public class AccountController {
      * }
      */
     @GetMapping("/status/{accountNumber}")
-    public ResponseEntity<StatusAccountDTO> getStatusByAccountNumber(
+    public ResponseEntity<StatusAccountDTOResponse> getStatusByAccountNumber(
             @PathVariable String accountNumber
     ) {
         try {
-            StatusAccountDTO statusAccount = accountService.findStatusAccount(accountNumber);
+            StatusAccountDTOResponse statusAccount = accountService.findStatusAccount(accountNumber);
             return ResponseEntity.ok(statusAccount);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new StatusAccountDTO("An unexpected error occurred", accountNumber, null));
+                    .body(new StatusAccountDTOResponse("An unexpected error occurred", accountNumber, null));
         }
     }
 
