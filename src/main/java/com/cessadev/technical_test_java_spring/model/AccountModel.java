@@ -20,61 +20,61 @@ import java.util.UUID;
 @Table(name = "account")
 public class AccountModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String accountNumber;
+  @Column(nullable = false, unique = true)
+  private String accountNumber;
 
-    @Column(nullable = false, precision = 19, scale = 4)
-    private BigDecimal balance = BigDecimal.ZERO;
+  @Column(nullable = false, precision = 19, scale = 4)
+  private BigDecimal balance = BigDecimal.ZERO;
 
-    @Column(nullable = false)
-    private String ownerName;
+  @Column(nullable = false)
+  private String ownerName;
 
-    @Enumerated(EnumType.STRING)
-    private EStatusAccount status = EStatusAccount.ACTIVE;
+  @Enumerated(EnumType.STRING)
+  private EStatusAccount status = EStatusAccount.ACTIVE;
 
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+  @Column(updatable = false)
+  private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
+  private LocalDateTime updatedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = createdAt;
-    }
+  @PrePersist
+  protected void onCreate() {
+    createdAt = LocalDateTime.now();
+    updatedAt = createdAt;
+  }
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+  @PreUpdate
+  protected void onUpdate() {
+    updatedAt = LocalDateTime.now();
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AccountModel that = (AccountModel) o;
-        return id.equals(that.id);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    AccountModel that = (AccountModel) o;
+    return id.equals(that.id);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 
-    @Override
-    public String toString() {
-        return "AccountModel{" +
-                "id=" + id +
-                ", accountNumber='" + accountNumber + '\'' +
-                ", balance=" + balance +
-                ", ownerName='" + ownerName + '\'' +
-                ", status=" + status +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "AccountModel{" +
+            "id=" + id +
+            ", accountNumber='" + accountNumber + '\'' +
+            ", balance=" + balance +
+            ", ownerName='" + ownerName + '\'' +
+            ", status=" + status +
+            ", createdAt=" + createdAt +
+            ", updatedAt=" + updatedAt +
+            '}';
+  }
 }

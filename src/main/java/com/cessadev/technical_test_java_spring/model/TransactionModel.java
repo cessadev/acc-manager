@@ -20,55 +20,55 @@ import java.util.UUID;
 @Table(name = "transaction")
 public class TransactionModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private UUID id;
 
-    @Enumerated(EnumType.STRING)
-    private ETypeTransaction typeTransaction;
+  @Enumerated(EnumType.STRING)
+  private ETypeTransaction typeTransaction;
 
-    @Column(nullable = false, precision = 19, scale = 4)
-    private BigDecimal amount;
+  @Column(nullable = false, precision = 19, scale = 4)
+  private BigDecimal amount;
 
-    /* References to the AccountModel entity to maintain referential integrity */
-    @ManyToOne
-    @JoinColumn(name = "account_origin_id", referencedColumnName = "id")
-    private AccountModel accountOrigin;
+  /* References to the AccountModel entity to maintain referential integrity */
+  @ManyToOne
+  @JoinColumn(name = "account_origin_id", referencedColumnName = "id")
+  private AccountModel accountOrigin;
 
-    /* References to the AccountModel entity to maintain referential integrity */
-    @ManyToOne
-    @JoinColumn(name = "account_destination_id", referencedColumnName = "id")
-    private AccountModel accountDestination;
+  /* References to the AccountModel entity to maintain referential integrity */
+  @ManyToOne
+  @JoinColumn(name = "account_destination_id", referencedColumnName = "id")
+  private AccountModel accountDestination;
 
-    @Column(updatable = false)
-    private LocalDateTime date;
+  @Column(updatable = false)
+  private LocalDateTime date;
 
-    @PrePersist
-    protected void onCreate() {
-        date = LocalDateTime.now();
-    }
+  @PrePersist
+  protected void onCreate() {
+    date = LocalDateTime.now();
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TransactionModel that)) return false;
-        return Objects.equals(id, that.id);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof TransactionModel that)) return false;
+    return Objects.equals(id, that.id);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 
-    @Override
-    public String toString() {
-        return "TransactionModel{" +
-                "id=" + id +
-                ", typeTransaction=" + typeTransaction +
-                ", amount=" + amount +
-                ", accountOrigin='" + accountOrigin + '\'' +
-                ", accountDestination='" + accountDestination + '\'' +
-                ", date=" + date +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "TransactionModel{" +
+            "id=" + id +
+            ", typeTransaction=" + typeTransaction +
+            ", amount=" + amount +
+            ", accountOrigin='" + accountOrigin + '\'' +
+            ", accountDestination='" + accountDestination + '\'' +
+            ", date=" + date +
+            '}';
+  }
 }

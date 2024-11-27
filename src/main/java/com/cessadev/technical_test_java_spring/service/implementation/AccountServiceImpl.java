@@ -26,7 +26,7 @@ import java.util.Optional;
  * - Creating new accounts with validations and unique account numbers.
  * - Updating existing accounts.
  * - Checking the status of accounts by account number.
- *
+ * <p>
  * The service relies on IAccountDAO for data access operations and IAccountMapper for
  * mapping between entity and DTO objects.
  */
@@ -34,119 +34,119 @@ import java.util.Optional;
 @Slf4j
 public class AccountServiceImpl implements IAccountService {
 
-    private final IAccountDAO accountDAO;
-    private final ITransactionDAO transactionDAO;
-    private final IAccountMapper accountMapper;
-    private final ITransactionMapper transactionMapper;
+  private final IAccountDAO accountDAO;
+  private final ITransactionDAO transactionDAO;
+  private final IAccountMapper accountMapper;
+  private final ITransactionMapper transactionMapper;
 
-    /**
-     * Constructor for AccountServiceImpl.
-     *
-     * @param accountDAO   the data access object for account operations.
-     * @param accountMapper the mapper for converting between DTOs and entities.
-     */
-    public AccountServiceImpl(IAccountDAO accountDAO, ITransactionDAO transactionDAO, IAccountMapper accountMapper, ITransactionMapper transactionMapper) {
-        this.accountDAO = accountDAO;
-        this.transactionDAO = transactionDAO;
-        this.accountMapper = accountMapper;
-        this.transactionMapper = transactionMapper;
+  /**
+   * Constructor for AccountServiceImpl.
+   *
+   * @param accountDAO    the data access object for account operations.
+   * @param accountMapper the mapper for converting between DTOs and entities.
+   */
+  public AccountServiceImpl(IAccountDAO accountDAO, ITransactionDAO transactionDAO, IAccountMapper accountMapper, ITransactionMapper transactionMapper) {
+    this.accountDAO = accountDAO;
+    this.transactionDAO = transactionDAO;
+    this.accountMapper = accountMapper;
+    this.transactionMapper = transactionMapper;
+  }
+
+  /**
+   * Retrieves a list of all accounts and maps them to DTO responses.
+   *
+   * @return a list of AccountDTOResponse objects representing all stored accounts.
+   */
+  @Override
+  public List<AccountDTOResponse> findAllAccounts() {
+    List<AccountModel> accountModelList = accountDAO.findAllAccounts();
+    return accountModelList.stream().map(
+            accountMapper::toDTO
+    ).toList();
+  }
+
+  /**
+   * Creates a new account with unique account number validation and initial balance checks.
+   *
+   * @param accountDTORequest the details of the account to create.
+   * @throws IllegalArgumentException if the initial balance is negative.
+   */
+  @Override
+  public void createAccount(CreateAccountDTORequest accountDTORequest) {
+    AccountModel accountModel = accountMapper.toEntity(accountDTORequest);
+
+    ValidateInitialBalance.validateInitialBalance(accountModel.getBalance());
+
+    String accountNumber;
+    do {
+      accountNumber = AccountNumberGenerator.generateAccountNumber();
+    } while (accountDAO.existsByAccountNumber(accountNumber));
+
+    accountModel.setAccountNumber(accountNumber);
+
+    accountDAO.createAccount(accountModel);
+  }
+
+  /**
+   * Updates an existing account by its account number.
+   *
+   * @param accountNumber the unique account number of the account to update.
+   * @param request       the details to update the account with.
+   * @return an UpdateAccountDTOResponse object indicating success or failure,
+   * and the updated account information if applicable.
+   */
+  @Override
+  public UpdateAccountDTOResponse updateAccount(String accountNumber, UpdateAccountDTORequest request) {
+    Optional<AccountModel> accountExist = accountDAO.findByAccountNumber(accountNumber);
+
+    if (accountExist.isEmpty()) {
+      return new UpdateAccountDTOResponse("Account Not Found", null);
     }
 
-    /**
-     * Retrieves a list of all accounts and maps them to DTO responses.
-     *
-     * @return a list of AccountDTOResponse objects representing all stored accounts.
-     */
-    @Override
-    public List<AccountDTOResponse> findAllAccounts() {
-        List<AccountModel> accountModelList = accountDAO.findAllAccounts();
-        return accountModelList.stream().map(
-                accountMapper::toDTO
-        ).toList();
+    AccountModel accountModel = accountExist.get();
+
+    if (request.ownerName() != null) {
+      accountModel.setOwnerName(request.ownerName());
     }
 
-    /**
-     * Creates a new account with unique account number validation and initial balance checks.
-     *
-     * @param accountDTORequest the details of the account to create.
-     * @throws IllegalArgumentException if the initial balance is negative.
-     */
-    @Override
-    public void createAccount(CreateAccountDTORequest accountDTORequest) {
-        AccountModel accountModel = accountMapper.toEntity(accountDTORequest);
-
-        ValidateInitialBalance.validateInitialBalance(accountModel.getBalance());
-
-        String accountNumber;
-        do {
-            accountNumber = AccountNumberGenerator.generateAccountNumber();
-        } while (accountDAO.existsByAccountNumber(accountNumber));
-
-        accountModel.setAccountNumber(accountNumber);
-
-        accountDAO.createAccount(accountModel);
+    if (request.status() != null) {
+      accountModel.setStatus(request.status());
     }
 
-    /**
-     * Updates an existing account by its account number.
-     *
-     * @param accountNumber the unique account number of the account to update.
-     * @param request       the details to update the account with.
-     * @return an UpdateAccountDTOResponse object indicating success or failure,
-     * and the updated account information if applicable.
-     */
-    @Override
-    public UpdateAccountDTOResponse updateAccount(String accountNumber, UpdateAccountDTORequest request) {
-        Optional<AccountModel> accountExist = accountDAO.findByAccountNumber(accountNumber);
+    AccountModel accountUpdated = accountDAO.updateAccountWithReturn(accountModel);
+    AccountDTOResponse accountDTOResponse = accountMapper.toDTO(accountUpdated);
 
-        if (accountExist.isEmpty()) {
-            return new UpdateAccountDTOResponse("Account Not Found", null);
-        }
+    return new UpdateAccountDTOResponse("Account updated successfully", accountDTOResponse);
+  }
 
-        AccountModel accountModel = accountExist.get();
+  /**
+   * Retrieves the status of an account by its account number.
+   *
+   * @param accountNumber the unique account number to search for.
+   * @return a StatusAccountDTOResponse object containing the account's status
+   * or a message if the account does not exist.
+   */
+  @Override
+  public StatusAccountDTOResponse findStatusAccount(String accountNumber) {
+    Optional<EStatusAccount> statusAccount = accountDAO.findStatusByAccountNumber(accountNumber);
 
-        if (request.ownerName() != null) {
-            accountModel.setOwnerName(request.ownerName());
-        }
-
-        if (request.status() != null) {
-            accountModel.setStatus(request.status());
-        }
-
-        AccountModel accountUpdated = accountDAO.updateAccountWithReturn(accountModel);
-        AccountDTOResponse accountDTOResponse = accountMapper.toDTO(accountUpdated);
-
-        return new UpdateAccountDTOResponse("Account updated successfully", accountDTOResponse);
+    if (statusAccount.isEmpty()) {
+      return new StatusAccountDTOResponse("Account Not Exist", accountNumber, null);
     }
 
-    /**
-     * Retrieves the status of an account by its account number.
-     *
-     * @param accountNumber the unique account number to search for.
-     * @return a StatusAccountDTOResponse object containing the account's status
-     * or a message if the account does not exist.
-     */
-    @Override
-    public StatusAccountDTOResponse findStatusAccount(String accountNumber) {
-        Optional<EStatusAccount> statusAccount = accountDAO.findStatusByAccountNumber(accountNumber);
+    EStatusAccount status = statusAccount.get();
+    return new StatusAccountDTOResponse("Current account status", accountNumber, status);
+  }
 
-        if (statusAccount.isEmpty()) {
-            return new StatusAccountDTOResponse("Account Not Exist", accountNumber, null);
-        }
+  @Override
+  public List<TransactionHistoryDTOResponse> getTransactionHistory(
+          String accountNumber,
+          LocalDateTime startDate,
+          LocalDateTime endDate,
+          ETypeTransaction typeTransaction) {
 
-        EStatusAccount status = statusAccount.get();
-        return new StatusAccountDTOResponse("Current account status", accountNumber, status);
-    }
+    List<TransactionModel> transactionModels = transactionDAO.findByFilters(accountNumber, startDate, endDate, typeTransaction);
 
-    @Override
-    public List<TransactionHistoryDTOResponse> getTransactionHistory(
-            String accountNumber,
-            LocalDateTime startDate,
-            LocalDateTime endDate,
-            ETypeTransaction typeTransaction) {
-
-        List<TransactionModel> transactionModels = transactionDAO.findByFilters(accountNumber, startDate, endDate, typeTransaction);
-
-        return transactionModels.stream().map(transactionMapper::toTransactionHistoryDTO).toList();
-    }
+    return transactionModels.stream().map(transactionMapper::toTransactionHistoryDTO).toList();
+  }
 }
