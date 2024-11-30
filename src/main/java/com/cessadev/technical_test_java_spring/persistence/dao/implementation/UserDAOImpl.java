@@ -21,4 +21,9 @@ public class UserDAOImpl implements IUserDAO {
     UserModel userModel = userRepository.findByEmail(email);
     return Optional.ofNullable(userModel);
   }
+
+  @Override
+  public void createUser(UserModel userModel) {
+    userRepository.save(userModel);
+  }
 }

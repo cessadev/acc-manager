@@ -29,10 +29,10 @@ public class UserModel {
   @Column(nullable = false)
   private String password;
 
-  private boolean enabled;
-  private boolean accountNonExpired;
-  private boolean credentialsNonExpired;
-  private boolean accountNonLocked;
+  private boolean enabled = true;
+  private boolean accountNonExpired = true;
+  private boolean credentialsNonExpired = true;
+  private boolean accountNonLocked = true;
 
   @ManyToMany(fetch = FetchType.EAGER, targetEntity = RoleModel.class, cascade = CascadeType.PERSIST)
   @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))

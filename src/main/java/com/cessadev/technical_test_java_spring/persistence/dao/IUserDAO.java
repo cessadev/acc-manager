@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface IUserDAO {
 
   Optional<UserModel> findByEmail(String email);
+
+  void createUser(UserModel userModel);
 }
