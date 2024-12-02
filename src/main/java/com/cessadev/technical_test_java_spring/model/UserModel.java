@@ -1,6 +1,5 @@
 package com.cessadev.technical_test_java_spring.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +24,6 @@ public class UserModel {
   @Column(nullable = false, unique = true)
   private String email;
 
-  @JsonIgnore
   @Column(nullable = false)
   private String password;
 
