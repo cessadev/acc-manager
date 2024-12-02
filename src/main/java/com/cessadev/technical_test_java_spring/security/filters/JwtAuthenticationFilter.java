@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,8 +27,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
   private final JwtUtils jwtUtils;
 
-  public JwtAuthenticationFilter(JwtUtils jwtUtils) {
+  public JwtAuthenticationFilter(JwtUtils jwtUtils, AuthenticationManager authenticationManager) {
     this.jwtUtils = jwtUtils;
+    setAuthenticationManager(authenticationManager);
   }
 
   @Override
