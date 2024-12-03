@@ -30,10 +30,10 @@ public class JwtUtils {
    */
   public String generateAccessToken(String username) {
     return Jwts.builder()
-            .setSubject(username) // Subject of the token
-            .setIssuedAt(new Date()) // Creation date
-            .setExpiration(new Date(System.currentTimeMillis() + expirationTime)) // Expiration time
-            .signWith(getSigningKey(), SignatureAlgorithm.HS256) // Signing algorithm
+            .subject(username) // Subject of the token
+            .issuedAt(new Date()) // Creation date
+            .expiration(new Date(System.currentTimeMillis() + expirationTime)) // Expiration time
+            .signWith(getSigningKey(), Jwts.SIG.HS256) // Signing algorithm
             .compact();
   }
 
@@ -69,10 +69,10 @@ public class JwtUtils {
    */
   public Claims extractAllClaims(String token) {
     return Jwts.parser()
-            .setSigningKey(getSigningKey())
+            .verifyWith(getSigningKey())
             .build()
-            .parseClaimsJws(token)
-            .getBody();
+            .parseSignedClaims(token)
+            .getPayload();
   }
 
   /**
