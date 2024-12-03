@@ -2,6 +2,7 @@ package com.cessadev.technical_test_java_spring.service.implementation;
 
 import com.cessadev.technical_test_java_spring.model.UserModel;
 import com.cessadev.technical_test_java_spring.persistence.dao.IUserDAO;
+import com.cessadev.technical_test_java_spring.service.IUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService, IUserDetailsService {
 
   private final IUserDAO userDAO;
 
