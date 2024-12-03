@@ -1,6 +1,6 @@
-package com.cessadev.technical_test_java_spring.security.filters;
+package com.cessadev.technical_test_java_spring.config.security.filters;
 
-import com.cessadev.technical_test_java_spring.security.jwt.JwtUtils;
+import com.cessadev.technical_test_java_spring.config.security.jwt.JwtUtils;
 import com.cessadev.technical_test_java_spring.service.IUserDetailsService;
 import com.cessadev.technical_test_java_spring.service.implementation.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;

@@ -1,7 +1,7 @@
-package com.cessadev.technical_test_java_spring.security.filters;
+package com.cessadev.technical_test_java_spring.config.security.filters;
 
 import com.cessadev.technical_test_java_spring.model.UserModel;
-import com.cessadev.technical_test_java_spring.security.jwt.JwtUtils;
+import com.cessadev.technical_test_java_spring.config.security.jwt.JwtUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

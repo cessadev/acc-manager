@@ -1,8 +1,8 @@
-package com.cessadev.technical_test_java_spring.security;
+package com.cessadev.technical_test_java_spring.config.security;
 
-import com.cessadev.technical_test_java_spring.security.filters.JwtAuthenticationFilter;
-import com.cessadev.technical_test_java_spring.security.filters.JwtAuthorizationFilter;
-import com.cessadev.technical_test_java_spring.security.jwt.JwtUtils;
+import com.cessadev.technical_test_java_spring.config.security.filters.JwtAuthenticationFilter;
+import com.cessadev.technical_test_java_spring.config.security.filters.JwtAuthorizationFilter;
+import com.cessadev.technical_test_java_spring.config.security.jwt.JwtUtils;
 import com.cessadev.technical_test_java_spring.service.implementation.UserDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

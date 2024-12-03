@@ -1,4 +1,4 @@
-package com.cessadev.technical_test_java_spring.security.jwt;
+package com.cessadev.technical_test_java_spring.config.security.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

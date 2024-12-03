@@ -1,4 +1,4 @@
-package com.cessadev.technical_test_java_spring.security;
+package com.cessadev.technical_test_java_spring.config.security;
 
 import com.cessadev.technical_test_java_spring.model.UserModel;
 import org.springframework.security.core.GrantedAuthority;
