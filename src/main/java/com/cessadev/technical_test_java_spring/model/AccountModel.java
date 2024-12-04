@@ -41,6 +41,10 @@ public class AccountModel {
 
   private LocalDateTime updatedAt;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
+  private UserModel user;
+
   @PrePersist
   protected void onCreate() {
     createdAt = LocalDateTime.now();
@@ -75,6 +79,7 @@ public class AccountModel {
             ", status=" + status +
             ", createdAt=" + createdAt +
             ", updatedAt=" + updatedAt +
+            ", user=" + user +
             '}';
   }
 }

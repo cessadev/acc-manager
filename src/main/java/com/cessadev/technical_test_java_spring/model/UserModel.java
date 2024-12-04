@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -32,6 +33,9 @@ public class UserModel {
   private boolean credentialsNonExpired = true;
   private boolean accountNonLocked = true;
 
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<AccountModel> accounts = new HashSet<>();
+
   @ManyToMany(fetch = FetchType.EAGER, targetEntity = RoleModel.class, cascade = CascadeType.PERSIST)
   @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<RoleModel> roles;
@@ -47,6 +51,7 @@ public class UserModel {
             Objects.equals(id, userModel.id) &&
             Objects.equals(email, userModel.email) &&
             Objects.equals(password, userModel.password) &&
+            Objects.equals(accounts, userModel.accounts) &&
             Objects.equals(roles, userModel.roles);
   }
 
@@ -60,6 +65,7 @@ public class UserModel {
             accountNonExpired,
             credentialsNonExpired,
             accountNonLocked,
+            accounts,
             roles);
   }
 
@@ -72,6 +78,7 @@ public class UserModel {
             ", accountNonExpired=" + accountNonExpired +
             ", credentialsNonExpired=" + credentialsNonExpired +
             ", accountNonLocked=" + accountNonLocked +
+            ", accounts=" + accounts +
             ", roles=" + roles +
             '}';
   }
