@@ -6,7 +6,13 @@ import java.util.Optional;
 
 public interface IUserDAO {
 
+  Optional<UserModel> findById(Long userId);
+
   Optional<UserModel> findByEmail(String email);
 
-  void createUser(UserModel userModel);
+  UserModel createUser(UserModel userModel);
+
+  boolean existsById(Long userId);
+
+  Optional<UserModel> findByIdWithUserInfo(Long id);
 }

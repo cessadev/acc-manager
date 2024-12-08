@@ -1,13 +1,16 @@
 package com.cessadev.technical_test_java_spring.service.implementation;
 
+import com.cessadev.technical_test_java_spring.exception.custom.account.ResourceNotFoundException;
 import com.cessadev.technical_test_java_spring.model.AccountModel;
 import com.cessadev.technical_test_java_spring.model.TransactionModel;
+import com.cessadev.technical_test_java_spring.model.UserModel;
 import com.cessadev.technical_test_java_spring.model.dto.*;
 import com.cessadev.technical_test_java_spring.model.enums.EStatusAccount;
 import com.cessadev.technical_test_java_spring.model.enums.ETypeTransaction;
 import com.cessadev.technical_test_java_spring.persistence.dao.IAccountDAO;
 import com.cessadev.technical_test_java_spring.persistence.dao.ITransactionDAO;
 import com.cessadev.technical_test_java_spring.service.IAccountService;
+import com.cessadev.technical_test_java_spring.service.IUserService;
 import com.cessadev.technical_test_java_spring.util.account.AccountNumberGenerator;
 import com.cessadev.technical_test_java_spring.util.account.ValidateInitialBalance;
 import com.cessadev.technical_test_java_spring.util.account.mapper.IAccountMapper;
@@ -38,6 +41,7 @@ public class AccountServiceImpl implements IAccountService {
   private final ITransactionDAO transactionDAO;
   private final IAccountMapper accountMapper;
   private final ITransactionMapper transactionMapper;
+  private final IUserService userService;
 
   /**
    * Constructor for AccountServiceImpl.
@@ -45,11 +49,12 @@ public class AccountServiceImpl implements IAccountService {
    * @param accountDAO    the data access object for account operations.
    * @param accountMapper the mapper for converting between DTOs and entities.
    */
-  public AccountServiceImpl(IAccountDAO accountDAO, ITransactionDAO transactionDAO, IAccountMapper accountMapper, ITransactionMapper transactionMapper) {
+  public AccountServiceImpl(IAccountDAO accountDAO, ITransactionDAO transactionDAO, IAccountMapper accountMapper, ITransactionMapper transactionMapper, IUserService userService) {
     this.accountDAO = accountDAO;
     this.transactionDAO = transactionDAO;
     this.accountMapper = accountMapper;
     this.transactionMapper = transactionMapper;
+    this.userService = userService;
   }
 
   /**
@@ -58,7 +63,7 @@ public class AccountServiceImpl implements IAccountService {
    * @return a list of AccountDTOResponse objects representing all stored accounts.
    */
   @Override
-  public List<AccountDTOResponse> findAllAccounts() {
+  public List<AccountDTOResponse> getAllAccounts() {
     List<AccountModel> accountModelList = accountDAO.findAllAccounts();
     return accountModelList.stream().map(
             accountMapper::toDTO
@@ -73,6 +78,10 @@ public class AccountServiceImpl implements IAccountService {
    */
   @Override
   public void createAccount(CreateAccountDTORequest accountDTORequest) {
+
+    UserModel user = userService.findById(accountDTORequest.userId())
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + accountDTORequest.userId()));
+
     AccountModel accountModel = accountMapper.toEntity(accountDTORequest);
 
     ValidateInitialBalance.validateInitialBalance(accountModel.getBalance());
@@ -83,6 +92,7 @@ public class AccountServiceImpl implements IAccountService {
     } while (accountDAO.existsByAccountNumber(accountNumber));
 
     accountModel.setAccountNumber(accountNumber);
+    accountModel.setUser(user);
 
     accountDAO.createAccount(accountModel);
   }
@@ -105,10 +115,6 @@ public class AccountServiceImpl implements IAccountService {
 
     AccountModel accountModel = accountExist.get();
 
-    if (request.ownerName() != null) {
-      accountModel.setOwnerName(request.ownerName());
-    }
-
     if (request.status() != null) {
       accountModel.setStatus(request.status());
     }
@@ -127,7 +133,7 @@ public class AccountServiceImpl implements IAccountService {
    * or a message if the account does not exist.
    */
   @Override
-  public StatusAccountDTOResponse findStatusAccount(String accountNumber) {
+  public StatusAccountDTOResponse getStatusAccount(String accountNumber) {
     Optional<EStatusAccount> statusAccount = accountDAO.findStatusByAccountNumber(accountNumber);
 
     if (statusAccount.isEmpty()) {

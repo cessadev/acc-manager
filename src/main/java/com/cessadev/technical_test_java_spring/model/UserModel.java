@@ -36,6 +36,9 @@ public class UserModel {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<AccountModel> accounts = new HashSet<>();
 
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private UserInfoModel userInfo;
+
   @ManyToMany(fetch = FetchType.EAGER, targetEntity = RoleModel.class, cascade = CascadeType.PERSIST)
   @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<RoleModel> roles;
@@ -52,6 +55,7 @@ public class UserModel {
             Objects.equals(email, userModel.email) &&
             Objects.equals(password, userModel.password) &&
             Objects.equals(accounts, userModel.accounts) &&
+            Objects.equals(userInfo, userModel.userInfo) &&
             Objects.equals(roles, userModel.roles);
   }
 
@@ -66,6 +70,7 @@ public class UserModel {
             credentialsNonExpired,
             accountNonLocked,
             accounts,
+            userInfo,
             roles);
   }
 
@@ -79,6 +84,7 @@ public class UserModel {
             ", credentialsNonExpired=" + credentialsNonExpired +
             ", accountNonLocked=" + accountNonLocked +
             ", accounts=" + accounts +
+            ", userInfo=" + userInfo +
             ", roles=" + roles +
             '}';
   }

@@ -49,7 +49,7 @@ public class AccountController {
   @GetMapping
   public ResponseEntity<List<AccountDTOResponse>> getAllAccounts() {
     try {
-      List<AccountDTOResponse> accounts = accountService.findAllAccounts();
+      List<AccountDTOResponse> accounts = accountService.getAllAccounts();
       return ResponseEntity.ok(accounts);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -162,7 +162,7 @@ public class AccountController {
           @PathVariable String accountNumber
   ) {
     try {
-      StatusAccountDTOResponse statusAccount = accountService.findStatusAccount(accountNumber);
+      StatusAccountDTOResponse statusAccount = accountService.getStatusAccount(accountNumber);
       return ResponseEntity.ok(statusAccount);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

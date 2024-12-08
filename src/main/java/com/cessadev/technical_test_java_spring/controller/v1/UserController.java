@@ -1,6 +1,7 @@
 package com.cessadev.technical_test_java_spring.controller.v1;
 
-import com.cessadev.technical_test_java_spring.model.dto.CreateUserDTORequest;
+import com.cessadev.technical_test_java_spring.model.dto.CreateUserCompleteDTORequest;
+import com.cessadev.technical_test_java_spring.model.dto.UserDTOResponse;
 import com.cessadev.technical_test_java_spring.service.IUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,10 +21,10 @@ public class UserController {
   }
 
   @PostMapping("/create")
-  public ResponseEntity<String> createUser(@RequestBody @Validated CreateUserDTORequest createUserDTORequest) {
+  public ResponseEntity<UserDTOResponse> createUser(@RequestBody @Validated CreateUserCompleteDTORequest userCompleteDTORequest) {
     try {
-      userService.createUser(createUserDTORequest);
-      return ResponseEntity.ok("User created successfully");
+      UserDTOResponse userDTOResponse = userService.createUser(userCompleteDTORequest);
+      return ResponseEntity.ok(userDTOResponse);
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     }

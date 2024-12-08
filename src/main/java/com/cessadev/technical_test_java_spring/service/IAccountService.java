@@ -23,7 +23,7 @@ public interface IAccountService {
      *
      * @return a list of AccountDTOResponse objects representing all stored accounts.
      */
-    List<AccountDTOResponse> findAllAccounts();
+    List<AccountDTOResponse> getAllAccounts();
 
     /**
      * Creates a new account based on the provided account details.
@@ -47,7 +47,7 @@ public interface IAccountService {
      * @param accountNumber the unique account number to search for.
      * @return a StatusAccountDTOResponse object representing the current status of the account.
      */
-    StatusAccountDTOResponse findStatusAccount(String accountNumber);
+    StatusAccountDTOResponse getStatusAccount(String accountNumber);
 
     List<TransactionHistoryDTOResponse> getTransactionHistory(
             String accountNumber,

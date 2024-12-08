@@ -17,13 +17,28 @@ public class UserDAOImpl implements IUserDAO {
   }
 
   @Override
+  public Optional<UserModel> findById(Long userId) {
+    return userRepository.findById(userId);
+  }
+
+  @Override
   public Optional<UserModel> findByEmail(String email) {
     UserModel userModel = userRepository.findByEmail(email);
     return Optional.ofNullable(userModel);
   }
 
   @Override
-  public void createUser(UserModel userModel) {
-    userRepository.save(userModel);
+  public UserModel createUser(UserModel userModel) {
+    return userRepository.save(userModel);
+  }
+
+  @Override
+  public boolean existsById(Long userId) {
+    return userRepository.existsById(userId);
+  }
+
+  @Override
+  public Optional<UserModel> findByIdWithUserInfo(Long id) {
+    return userRepository.findByIdWithUserInfo(id);
   }
 }

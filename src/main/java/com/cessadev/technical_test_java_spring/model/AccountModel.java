@@ -30,9 +30,6 @@ public class AccountModel {
   @Column(nullable = false, precision = 19, scale = 4)
   private BigDecimal balance = BigDecimal.ZERO;
 
-  @Column(nullable = false)
-  private String ownerName;
-
   @Enumerated(EnumType.STRING)
   private EStatusAccount status = EStatusAccount.ACTIVE;
 
@@ -75,7 +72,6 @@ public class AccountModel {
             "id=" + id +
             ", accountNumber='" + accountNumber + '\'' +
             ", balance=" + balance +
-            ", ownerName='" + ownerName + '\'' +
             ", status=" + status +
             ", createdAt=" + createdAt +
             ", updatedAt=" + updatedAt +

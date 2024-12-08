@@ -8,10 +8,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface IUserMapper {
 
-//  @Mapping(target = "enabled", ignore = true)
-//  @Mapping(target = "accountNonExpired", ignore = true)
-//  @Mapping(target = "credentialsNonExpired", ignore = true)
-//  @Mapping(target = "accountNonLocked", ignore = true)
   @Mapping(target = "password", ignore = true)
   @Mapping(target = "roles", ignore = true)
   UserModel toEntity(CreateUserDTORequest createUserDTORequest);
