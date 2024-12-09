@@ -1,12 +1,10 @@
 package com.cessadev.technical_test_java_spring.service.implementation;
 
+import com.cessadev.technical_test_java_spring.exception.custom.account.ResourceNotFoundException;
 import com.cessadev.technical_test_java_spring.model.RoleModel;
 import com.cessadev.technical_test_java_spring.model.UserInfoModel;
 import com.cessadev.technical_test_java_spring.model.UserModel;
-import com.cessadev.technical_test_java_spring.model.dto.CreateUserCompleteDTORequest;
-import com.cessadev.technical_test_java_spring.model.dto.CreateUserDTORequest;
-import com.cessadev.technical_test_java_spring.model.dto.CreateUserInfoDTORequest;
-import com.cessadev.technical_test_java_spring.model.dto.UserDTOResponse;
+import com.cessadev.technical_test_java_spring.model.dto.*;
 import com.cessadev.technical_test_java_spring.model.enums.ERoles;
 import com.cessadev.technical_test_java_spring.persistence.dao.IRoleDAO;
 import com.cessadev.technical_test_java_spring.persistence.dao.IUserDAO;
@@ -102,5 +100,28 @@ public class UserServiceImpl implements IUserService {
     UserInfoModel userInfoModelSaved = userInfoService.insertUserInfo(userInfoModel);
 
     return new UserDTOResponse(userInfoModelSaved.getId(), userModelSaved.getEmail());
+  }
+
+  @Override
+  public UserWithInfoDTOResponse getUserWithInfo(Long id) {
+    Optional<UserModel> userModelOptional = userDAO.findByIdWithUserInfo(id);
+
+    if (userModelOptional.isEmpty()) {
+      throw new ResourceNotFoundException("User not found:" + id);
+    }
+
+    UserModel user = userModelOptional.get();
+
+    UserInfoModel userInfo = user.getUserInfo();
+
+    return new UserWithInfoDTOResponse(
+            user.getId(),
+            user.getEmail(),
+            userInfo.getFirstName(),
+            userInfo.getLastName(),
+            userInfo.getAddress(),
+            userInfo.getPhoneNumber(),
+            userInfo.getCity()
+    );
   }
 }

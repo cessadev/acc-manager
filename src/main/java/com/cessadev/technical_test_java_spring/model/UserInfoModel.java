@@ -3,6 +3,7 @@ package com.cessadev.technical_test_java_spring.model;
 import com.cessadev.technical_test_java_spring.model.enums.EEmploymentStatus;
 import com.cessadev.technical_test_java_spring.model.enums.EGender;
 import com.cessadev.technical_test_java_spring.model.enums.EMaritalStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
